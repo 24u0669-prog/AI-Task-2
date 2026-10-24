@@ -1,0 +1,6 @@
+torch>=2.2,<2.8
+matplotlib>=3.8,<4
+numpy>=1.26,<3
+transformers>=4.46,<5
+fastapi>=0.115,<1
+uvicorn[standard]>=0.30,<1

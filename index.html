@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="An interactive, local AI movie review sentiment analyzer and machine-learning portfolio project."
+    />
+    <meta name="theme-color" content="#0b1120" />
+    <title>Sentiment Studio — AI Review Analyzer</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3ES%3C/text%3E%3C/svg%3E"
+    />
+    <link rel="stylesheet" href="/static/styles.css?v=2" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <a class="brand" href="/" aria-label="Sentiment Studio home">
+          <span class="brand-icon" aria-hidden="true">S</span>
+          <span>sentiment<span class="brand-accent">studio</span></span>
+        </a>
+        <nav class="topnav" aria-label="Main navigation">
+          <a class="nav-link active" href="#analyzer">Analyzer</a>
+          <a class="nav-link" href="#insights">Model insights</a>
+          <a class="nav-link" href="#about">About</a>
+        </nav>
+        <div id="system-status" class="system-status" role="status">
+          <span class="status-dot"></span>
+          <span>Connecting</span>
+        </div>
+      </header>
+
+      <main>
+        <section class="hero">
+          <div class="hero-copy">
+            <div class="eyebrow"><span class="sparkle">✳</span> MOVIE REVIEW SENTIMENT ANALYSIS</div>
+            <h1>Know the tone<br />of the <span class="gradient-text">review.</span></h1>
+            <p class="hero-description">
+              Paste a movie review to see whether its overall tone is positive or negative.
+              Compare a pretrained language model with a smaller model you can train yourself.
+            </p>
+            <a class="hero-link" href="#analyzer">Analyze a review <span aria-hidden="true">↓</span></a>
+          </div>
+          <div class="hero-visual" role="group" aria-label="Illustration of how a review becomes a sentiment estimate">
+            <div class="process-card">
+              <div class="process-card-heading">
+                <span class="eyebrow">FROM REVIEW TO RESULT</span>
+                <span class="process-spark" aria-hidden="true">✳</span>
+              </div>
+              <div class="process-review">
+                <span class="process-step">01 · YOUR TEXT</span>
+                <p>“A moving story with wonderful performances.”</p>
+              </div>
+              <div class="process-connector" aria-hidden="true"></div>
+              <div class="process-result">
+                <span class="process-step">02 · MODEL ESTIMATE</span>
+                <div class="process-result-line">
+                  <strong>Positive tone</strong>
+                  <span>Example</span>
+                </div>
+                <div class="process-meter" aria-hidden="true"><span></span></div>
+                <small>Illustrative result · not a live prediction</small>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="analyzer" class="section">
+          <div class="section-heading">
+            <div>
+              <div class="eyebrow">01 / THE ANALYZER</div>
+              <h2>Analyze a <span class="gradient-text">movie review.</span></h2>
+              <p>Get a positive/negative tone estimate and model scores. Your text is not saved by this app.</p>
+            </div>
+            <div class="model-pill"><span class="pill-dot"></span> Transformer AI + PyTorch</div>
+          </div>
+
+          <div class="analyzer-card">
+            <div class="mode-row">
+              <div class="segmented-control" role="tablist" aria-label="Analysis mode">
+                <button id="single-mode" class="segment active" role="tab" aria-selected="true">
+                  <span aria-hidden="true">✎</span> Single review
+                </button>
+                <button id="batch-mode" class="segment" role="tab" aria-selected="false">
+                  <span aria-hidden="true">▤</span> Batch analysis
+                </button>
+              </div>
+              <label class="model-select-label" for="model-select">CHOOSE A MODEL</label>
+              <select id="model-select" class="model-select" aria-label="AI model">
+                <option value="transformer">DistilBERT · pretrained transformer</option>
+                <option value="cnn">Text CNN · trained on this project</option>
+              </select>
+            </div>
+            <p class="model-help">DistilBERT uses pretrained sentiment weights. The Text CNN is the model trained and evaluated below.</p>
+
+            <div id="single-panel">
+              <label class="field-label" for="review-input">PASTE A REVIEW</label>
+              <textarea
+                id="review-input"
+                maxlength="10000"
+                placeholder="The story pulled me in from the first scene..."
+                rows="5"
+              ></textarea>
+              <div class="input-footer">
+                <div class="sample-row">
+                  <span class="sample-label">TRY:</span>
+                  <button class="sample-chip" data-example="A clever, heartfelt story with brilliant performances. I loved every minute.">Delightful</button>
+                  <button class="sample-chip" data-example="Slow, predictable, and badly acted. I couldn't wait for it to end.">Disappointing</button>
+                  <button class="sample-chip" data-example="The visuals were beautiful, but the story never quite came together.">Mixed</button>
+                </div>
+                <span id="character-count" class="character-count">0 / 10,000</span>
+              </div>
+              <div class="action-row">
+                <span class="privacy-note"><span aria-hidden="true">◇</span> Analyzed locally · never stored</span>
+                <button id="analyze-button" class="primary-button">
+                  <span>Analyze sentiment</span><span aria-hidden="true">↗</span>
+                </button>
+              </div>
+            </div>
+
+            <div id="batch-panel" class="hidden">
+              <label class="field-label" for="batch-input">REVIEWS · ONE PER LINE</label>
+              <textarea
+                id="batch-input"
+                maxlength="200000"
+                placeholder="Paste multiple reviews here, one review on each line..."
+                rows="6"
+              ></textarea>
+              <div class="input-footer">
+                <label class="upload-link" for="batch-file">↑ Upload .txt or .csv</label>
+                <input id="batch-file" type="file" accept=".txt,.csv,text/plain,text/csv" hidden />
+                <span id="batch-count" class="character-count">0 reviews · max 100</span>
+              </div>
+              <div class="action-row">
+                <span class="privacy-note"><span aria-hidden="true">◇</span> Text stays on this machine</span>
+                <button id="batch-button" class="primary-button">
+                  <span>Analyze batch</span><span aria-hidden="true">↗</span>
+                </button>
+              </div>
+            </div>
+
+            <div id="error-message" class="error-message hidden" role="alert"></div>
+            <div id="loading-message" class="loading-message hidden" role="status">
+              <span class="loader"></span><span>Preparing AI and analyzing your review…</span>
+            </div>
+
+            <section id="single-result" class="result-panel hidden" aria-live="polite">
+              <div class="result-rule"></div>
+              <div class="result-heading-row">
+                <div>
+                  <div class="eyebrow">ESTIMATED OVERALL TONE</div>
+                  <h3 id="result-title">Positive</h3>
+                  <p id="result-model" class="result-subtitle"></p>
+                </div>
+                <div id="result-icon" class="result-icon positive" aria-hidden="true">↗</div>
+              </div>
+              <div class="score-heading">
+                <span>How the model scored it</span><span class="muted">Scores are estimates, not certainty</span>
+              </div>
+              <div class="score-row">
+                <span class="score-label negative-text">Negative</span>
+                <div class="score-track"><div id="negative-bar" class="score-fill negative-fill"></div></div>
+                <span id="negative-score" class="score-value">0%</span>
+              </div>
+              <div class="score-row">
+                <span class="score-label positive-text">Positive</span>
+                <div class="score-track"><div id="positive-bar" class="score-fill positive-fill"></div></div>
+                <span id="positive-score" class="score-value">0%</span>
+              </div>
+              <div class="result-note">
+                <span class="result-note-icon" aria-hidden="true">i</span>
+                <div><strong>What this means</strong><p id="result-note">The model estimates the review's overall tone. It does not identify which words caused its prediction.</p></div>
+              </div>
+            </section>
+
+            <section id="batch-result" class="batch-result hidden" aria-live="polite">
+              <div class="result-rule"></div>
+              <div class="batch-summary">
+                <div><span class="eyebrow">BATCH COMPLETE</span><h3 id="batch-summary-title"></h3></div>
+                <button id="download-csv" class="secondary-button">↓ Download CSV</button>
+              </div>
+              <div class="table-wrap">
+                <table>
+                  <thead><tr><th>#</th><th>Review</th><th>Sentiment</th><th>Score</th></tr></thead>
+                  <tbody id="batch-table-body"></tbody>
+                </table>
+              </div>
+            </section>
+          </div>
+        </section>
+
+        <section id="insights" class="section insights-section">
+          <div class="section-heading">
+            <div>
+              <div class="eyebrow">02 / MODEL EVALUATION</div>
+              <h2>How well did the <span class="gradient-text">trained model do?</span></h2>
+              <p>These scores evaluate the Text CNN on unseen test reviews—not the pretrained DistilBERT or text submitted above.</p>
+            </div>
+            <span id="evaluation-badge" class="model-pill">Loading evaluation</span>
+          </div>
+          <div id="metrics-grid" class="metrics-grid">
+            <article class="metric-card"><span>TEST ACCURACY</span><strong id="metric-accuracy">—</strong><small>Share of all test reviews classified correctly</small></article>
+            <article class="metric-card"><span>MACRO PRECISION</span><strong id="metric-precision">—</strong><small>How often each predicted class was right, averaged equally</small></article>
+            <article class="metric-card"><span>MACRO RECALL</span><strong id="metric-recall">—</strong><small>How many reviews of each class were found, averaged equally</small></article>
+            <article class="metric-card"><span>MACRO F1</span><strong id="metric-f1">—</strong><small>One balanced score combining precision and recall</small></article>
+          </div>
+          <aside class="metric-interpretation">
+            <span class="interpretation-icon" aria-hidden="true">↳</span>
+            <div><strong>What the test results tell us</strong><p id="metric-interpretation-text">Loading the held-out test-set summary…</p></div>
+          </aside>
+          <div class="charts-grid">
+            <article class="chart-card">
+              <div class="chart-title"><div><span class="eyebrow">TRAINING</span><h3>Learning curve</h3></div><span class="chart-key"><i class="key-train"></i>Train <i class="key-validation"></i>Validation</span></div>
+              <div id="loss-chart" class="mini-chart"><span class="chart-empty">Train the project model to see its learning curve.</span></div>
+              <span class="chart-axis-label">Loss per epoch</span>
+            </article>
+            <article class="chart-card">
+              <div class="chart-title"><div><span class="eyebrow">EVALUATION</span><h3>Test confusion matrix</h3></div></div>
+              <div id="confusion-matrix" class="confusion-matrix"><span class="chart-empty">Test results will appear here.</span></div>
+              <span class="chart-axis-label">Rows = actual class · Columns = model prediction</span>
+            </article>
+          </div>
+        </section>
+
+        <section class="section training-section">
+          <div class="section-heading">
+            <div>
+              <div class="eyebrow">03 / EXPERIMENT</div>
+              <h2>Train your <span class="gradient-text">own model.</span></h2>
+              <p>Start a local training run and follow its logs right here.</p>
+            </div>
+          </div>
+          <div class="training-card">
+            <div class="training-controls">
+              <label>Epochs<input id="train-epochs" type="number" min="1" max="20" value="5" /></label>
+              <label>Batch size<input id="train-batch-size" type="number" min="16" max="256" step="16" value="64" /></label>
+              <label>Learning rate<input id="train-learning-rate" type="number" min="0.00001" max="0.01" step="0.0001" value="0.001" /></label>
+              <label>Training subset<input id="train-limit" type="number" min="0" max="1800" step="100" value="0" /><small>0 = full dataset</small></label>
+            </div>
+            <div class="action-row">
+              <span class="privacy-note">CPU or CUDA · Your best validation checkpoint is saved</span>
+              <button id="train-button" class="primary-button"><span>Start training</span><span aria-hidden="true">↗</span></button>
+            </div>
+            <pre id="training-log" class="training-log hidden" aria-live="polite"></pre>
+          </div>
+        </section>
+
+        <section id="about" class="section about-section">
+          <div class="eyebrow">04 / UNDER THE HOOD</div>
+          <h2>Built to learn.<br /><span class="gradient-text">Made to explain.</span></h2>
+          <div class="about-grid">
+            <article><span class="about-number">01</span><h3>Pretrained language AI</h3><p>DistilBERT reads context, not just isolated positive or negative keywords. It runs on your machine after its first download.</p></article>
+            <article><span class="about-number">02</span><h3>Trainable PyTorch model</h3><p>A text CNN learns word embeddings from the movie-review corpus, with deterministic train, validation, and test splits.</p></article>
+            <article><span class="about-number">03</span><h3>Evaluation you can inspect</h3><p>Accuracy, macro-averaged precision, recall, F1, training history, and a confusion matrix make model behavior visible.</p></article>
+          </div>
+          <div class="tech-stack"><span>PYTHON</span><span>PYTORCH</span><span>TRANSFORMERS</span><span>FASTAPI</span><span>JAVASCRIPT</span></div>
+        </section>
+      </main>
+
+      <footer class="footer">
+        <a class="brand" href="/"><span class="brand-icon" aria-hidden="true">S</span><span>sentiment<span class="brand-accent">studio</span></span></a>
+        <span>Local-first AI · An educational portfolio project</span>
+        <a class="back-to-top" href="#">Back to top ↑</a>
+      </footer>
+    </div>
+    <script src="/static/app.js?v=3" defer></script>
+  </body>
+</html>
